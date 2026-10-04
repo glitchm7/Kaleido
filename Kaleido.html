@@ -1,0 +1,34 @@
+<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Kaleido</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#08060c;cursor:crosshair}</style>
+<canvas id=c></canvas>
+<script>
+C=c;X=C.getContext('2d');W=H=0;
+onresize=()=>{W=C.width=innerWidth;H=C.height=innerHeight};
+onresize();
+segs=6;hue=0;px=py=0;drawing=0;
+onpointerdown=e=>{drawing=1;px=e.clientX;py=e.clientY};
+onpointerup=()=>drawing=0;
+onpointermove=e=>{
+if(!drawing)return;
+cx=W/2;cy=H/2;
+X.globalCompositeOperation='lighter';
+for(var i=0;i<segs;i++){
+var a=(i/segs)*6.283+performance.now()*.0002;
+X.save();X.translate(cx,cy);X.rotate(a);
+X.beginPath();X.moveTo(px-cx,py-cy);
+X.lineTo(e.clientX-cx,e.clientY-cy);
+X.lineWidth=3;X.lineCap='round';
+X.strokeStyle='hsl('+hue+',90%,65%)';
+X.stroke();
+X.restore();
+}
+X.globalCompositeOperation='source-over';
+px=e.clientX;py=e.clientY;hue=(hue+2)%360;
+};
+onresize();
+function F(){
+X.fillStyle='rgba(8,6,12,.012)';X.fillRect(0,0,W,H);
+requestAnimationFrame(F);
+}
+F();
+</script>
